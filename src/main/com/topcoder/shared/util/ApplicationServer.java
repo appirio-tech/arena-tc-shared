@@ -43,8 +43,15 @@ import java.sql.ResultSet;
  *   </ol>
  * </p>
  *
- * @author Steve Burrows, pulky
- * @version 1.4
+ * <p>
+ *   Version 1.5 (https://apps.topcoder.com/bugs/browse/BUGR-10718) Change notes:
+ *   <ol>
+ *     <li>Add JWT_COOKIE_KEY.</li>
+ *   </ol>
+ * </p>
+ *
+ * @author Steve Burrows, pulky, MonicaMuranyi
+ * @version 1.5
  */
 public class ApplicationServer {
     private static Logger log = Logger.getLogger(ApplicationServer.class);
@@ -222,6 +229,15 @@ public class ApplicationServer {
      */
     public final static String DOMAIN_AUTH0 =
         bundle.getProperty("DOMAIN_AUTH0", "topcoder.auth0.com");
+
+    /**
+     * <p>
+     * The json web token
+     * </p>
+     * @since 1.5
+     */
+    public final static String JWT_COOKIE_KEY =
+        bundle.getProperty("JWT_COOKIE_KEY", "");
 
     public static void close(ResultSet rs) {
         if (rs != null) {
