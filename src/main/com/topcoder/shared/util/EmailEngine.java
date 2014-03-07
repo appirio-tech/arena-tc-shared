@@ -64,7 +64,32 @@ public class EmailEngine {
         }
 
         try {
-            send(host, port,
+            send(false, host, port,
+                    from, to, cc, bcc, subject, data);
+        } catch (SendFailedException e) {
+            throw new Exception("One or more addresses were not accepted.");
+        }
+    }
+    public static void sendHtml(TCSEmailMessage message) throws Exception {
+        Address from = message.getFromAddress();
+        Address to[] = message.getToAddress(TCSEmailMessage.TO);
+        Address cc[] = message.getToAddress(TCSEmailMessage.CC);
+        Address bcc[] = message.getToAddress(TCSEmailMessage.BCC);
+        String subject = message.getSubject();
+        String data = message.getBody();
+        String host = SMTP_HOST_ADDR;
+        int port = SMTP_HOST_PORT;
+        if (to.length < 1)
+            throw new Exception("There must be at least one TO: address");
+        try {
+            ResourceBundle resource = ResourceBundle.getBundle("EmailEngineConfig");
+            host = resource.getString("smtp_host_addr");
+            port = Integer.parseInt(resource.getString("smtp_host_port"));
+        } catch (Exception e) {
+            log.warn("Failed to read/parse the 'EmailEngineConfig' resource file: " + e.getMessage());
+        }
+        try {
+            send(true, host, port,
                     from, to, cc, bcc, subject, data);
         } catch (SendFailedException e) {
             throw new Exception("One or more addresses were not accepted.");
@@ -85,7 +110,7 @@ public class EmailEngine {
      * @throws SendFailedException
      * @throws Exception
      */
-    private static void send(String host, int port,
+    private static void send(boolean isHtml, String host, int port,
                              Address from, Address[] to, Address[] cc, Address[] bcc,
                              String subject, String data) throws SendFailedException, Exception {
         Address[] ret = new Address[0];
@@ -112,8 +137,11 @@ public class EmailEngine {
             eMailMessage.setSubject(subject, "utf-8");
             Date sentDate = new Date();
             eMailMessage.setSentDate(sentDate);
-            //eMailMessage.setContent(data, "text/plain");
+            if (isHtml) {
+                eMailMessage.setContent(data, "text/html");
+            } else {
             eMailMessage.setText(data, "utf-8");
+            }
             eMailMessage.setHeader("Content-Transfer-Encoding", "8bit");
             eMailTransport.send(eMailMessage);
         } catch (NoSuchProviderException e) {
