@@ -5,8 +5,11 @@
     <import file="${glue.dir}/glue-jar.xml" />
 
 
-    <!-- we need this target for web, they have to upgrade their build process first -->    
-    <target name="shared-all" depends="rejar-all,publish-workspace">
+    <!-- we need this target for web, they have to upgrade their build process first -->
+    <target name="shared-all">
+        <property name="app.version" value="SNAPSHOT" />
+        <antcall target="rejar-all" />
+        <antcall target="publish-workspace" />
     </target>
     
     <target name="rejar-all" depends="jar">
