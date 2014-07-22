@@ -1,5 +1,5 @@
 /*
- * Copyright (C) - 2013 TopCoder Inc., All Rights Reserved.
+ * Copyright (C) - 2014 TopCoder Inc., All Rights Reserved.
  */
 package com.topcoder.shared.problemParser;
 
@@ -72,9 +72,20 @@ import com.topcoder.shared.util.logging.Logger;
  *      <li>Update {@link #buildFromXML(Reader reader, boolean unsafe)} method.</li>
  * </ol>
  * </p>
+ *
+ * <p>
+ * Changes in version 1.6 (TopCoder Competition Engine - Stack Size Configuration For SRM Problems v1.0):
+ * <ol>
+ *      <li>Aded {@link #STACK_LIMIT} constand for stack limit tag name.</li>
+ *      <li>Aded {@link #parseStackLimit()} method for parsing stack limit.</li>
+ *      <li>Updated {@link #buildFromXML(Reader reader, boolean unsafe)} method to parse stack limit.</li>
+ *      <li>Updated {@link #buildFromXML(Reader reader, boolean unsafe)} method to log check type error messages.</li>
+ * </ol>
+ * </p>
+ *
  * @see ProblemComponent
- * @author Logan Hanks, savon_cn, TCSASSEMBLER
- * @version 1.5
+ * @author Logan Hanks, savon_cn, Selena
+ * @version 1.6
  */
 public class ProblemComponentFactory
     implements ErrorHandler
@@ -103,6 +114,13 @@ public class ProblemComponentFactory
     static final String SIGNATURE_PARAM = "param";
     static final String SIGNATURE_PARAM_NAME = "name";
     static final String MEM_LIMIT = "memlimit";
+
+    /**
+     * Stack limit tag name.
+     * @since 1.6
+     */
+    static final String STACK_LIMIT = "stacklimit";
+
     static final String ROUND_TYPE = "roundType";
     /**
      * the gcc build command key.
@@ -193,7 +211,7 @@ public class ProblemComponentFactory
             sections = root.getChildNodes();
             checkTypes(root);
             if(!stmt.isValid()) {
-                trace.error("checkTypes failed!");
+                trace.error("checkTypes failed! Error messages: " + stmt.getMessages().toString());
                 return stmt;
             }
             parseSignature();
@@ -203,6 +221,7 @@ public class ProblemComponentFactory
             parseConstraints();
             parseTestCases();
             parseMemLimit();
+            parseStackLimit();
             parseRoundType();
             
             if(!unsafe)
@@ -583,6 +602,26 @@ public class ProblemComponentFactory
         }
     }
     
+    /**
+     * Parses stack size limit.
+     * @since 1.6
+     */
+    void parseStackLimit()
+    {
+        Node node = getChildByName(sections, STACK_LIMIT);
+        if (node != null) {
+            try {
+                int stackLimit = Integer.parseInt(getText(node));
+                removeTextChildren(node);
+                stmt.getProblemCustomSettings().setStackLimit(stackLimit);
+            } catch (Exception e) {
+                stmt.addMessage(new ProblemMessage(ProblemMessage.ERROR,
+                    "Non-numeric stack size limit: " + getText(node)));
+                stmt.setValid(false);
+            }
+        }
+    }
+
     void parseRoundType()
     {
         Node node = getChildByName(sections, ROUND_TYPE);
