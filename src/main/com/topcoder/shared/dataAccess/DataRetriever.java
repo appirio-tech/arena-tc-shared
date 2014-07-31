@@ -572,7 +572,7 @@ public class DataRetriever implements DataRetrieverInt {
 
                 }
             }
-            trackExecution(commandId, conn, System.currentTimeMillis()-start);
+            trackExecution(commandId, conn, System.currentTimeMillis()-start, inputs);
 
         } catch (Exception e) {
             handleException(e, queryText, inputs);
@@ -582,13 +582,28 @@ public class DataRetriever implements DataRetrieverInt {
         return resultMap;
     }
 
-    private void trackExecution(long commandId, Connection conn, long time) {
+    private void trackExecution(long commandId, Connection conn, long time, Map inputs) {
         PreparedStatement ps = null;
 
         try {
-            ps = conn.prepareStatement("insert into command_execution (command_id, execution_time) values (?, ?)");
+            ps = conn.prepareStatement("insert into command_execution (command_id, execution_time, inputs) values (?, ?, ?)");
             ps.setLong(1, commandId);
             ps.setLong(2, time);
+            StringBuffer sb = new StringBuffer();
+            if(inputs != null) {
+                Iterator i = inputs.keySet().iterator();
+                while (i.hasNext()) {
+                    String key = (String) i.next();
+                    sb.append(key);
+                    sb.append(':');
+                    sb.append((String) inputs.get(key));
+                    sb.append('|');
+                }
+                ps.setString(3, sb.toString());
+            } else {
+                ps.setString(3, null);
+            }
+
             ps.executeUpdate();
         } catch (Exception e) {
             log.error("Couldn't insert row to track the execution of command " + commandId);
