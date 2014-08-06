@@ -22,7 +22,10 @@
         <dependency org="org.apache.activemq" name="activemq-core" rev="4.1.1" transitive="false" />
         <dependency org="org.apache.activemq" name="activeio-core" rev="3.0.0-incubator" transitive="false" />
         <dependency org="backport-util-concurrent" name="backport-util-concurrent" rev="2.1" transitive="false" />
+<!--
         <dependency org="junit" name="junit" rev="3.8.2"/>
+-->
+        <dependency org="junit" name="junit" rev="4.11"/>
         
         <dependency org="jboss" name="jbossall-client" rev="4.0.5" transitive="false" />
         
