@@ -86,6 +86,7 @@ public class ApplicationServer {
     public static String DISTRIBUTED_UI_SERVER_NAME = bundle.getProperty("DISTRIBUTED_UI_SERVER_NAME", "63.118.154.181:9380");
     public static String OR_WEBSERVICES_SERVER_NAME = bundle.getProperty("OR_WEBSERVICES_SERVER_NAME", "63.118.154.186:8080");
     public static String WIKI_SERVER_NAME = bundle.getProperty("WIKI_SERVER_NAME", "www.dev.topcoder.com/wiki");
+    public static String NEW_COMMUNITY_SERVER_NAME = bundle.getProperty("NEW_COMMUNITY_SERVER_NAME", "www.topcoder.com");
 
     public static String SSO_DOMAIN = bundle.getProperty("SSO_DOMAIN", ".topcoder.com");
 
