@@ -18,6 +18,7 @@ package com.topcoder.shared.util.dwload;
  * <li>coder_image_xref</li>
  * <li>school</li>
  * <li>current_school</li>
+ * <li>user_notification</li>
  * </ul>
  *
  * @author Christopher Hopkins [TCid: darkstalker] (chrism_hopkins@yahoo.com)
@@ -104,6 +105,8 @@ public class TCLoadCoders extends TCLoad {
             loadEvent();
 
             loadEventRegistration();
+            
+            loadUserNotifications();
 
             clearCache(coders);
 
@@ -1714,6 +1717,73 @@ public class TCLoadCoders extends TCLoad {
             close(select);
             close(insert);
             close(update);
+        }
+    }
+
+    public void loadUserNotifications() throws Exception {
+        log.info("load user notifications");
+        PreparedStatement select = null;
+        PreparedStatement delete = null;
+        PreparedStatement insert = null;
+        ResultSet rs = null;
+
+        try {
+            long start = System.currentTimeMillis();
+
+            final String SELECT = "SELECT\n" +
+                    "unx.user_id,\n" +
+                    "nl.notify_id,\n" +
+                    "nl.name,\n" +
+                    "nl.status,\n" +
+                    "ntl.notify_type_id,\n" +
+                    "ntl.notify_type_desc\n" +
+                    "FROM common_oltp:user_notify_xref unx, common_oltp:notify_lu nl, common_oltp:notify_type_lu ntl \n" +
+                    "WHERE unx.notify_id = nl.notify_id \n" +
+                    "AND nl.notify_type_id = ntl.notify_type_id";
+
+            final String DELETE = "DELETE FROM user_notification";
+
+            final String INSERT = "insert into user_notification(user_id, notify_id, name, status, notify_type_id, notify_type_desc) " +
+                    "values (?, ?, ?, ?, ?, ?) ";
+
+
+            select = prepareStatement(SELECT, SOURCE_DB);
+            delete = prepareStatement(DELETE, TARGET_DB);
+            insert = prepareStatement(INSERT, TARGET_DB);
+
+            rs = select.executeQuery();
+
+            // clear first
+            int deleteCount = delete.executeUpdate();
+
+            log.info("Clear " + deleteCount + " records in table topcoder_dw:user_notification");
+
+            int count = 0;
+            while (rs.next()) {
+                count++;
+                insert.clearParameters();
+                insert.setLong(1, rs.getLong("user_id"));
+                insert.setLong(2, rs.getLong("notify_id"));
+                insert.setString(3, rs.getString("name"));
+                insert.setString(4, rs.getString("status"));
+                insert.setLong(5, rs.getLong("notify_type_id"));
+                insert.setString(6, rs.getString("notify_type_desc"));
+
+                insert.executeUpdate();
+
+            }
+            log.info("loaded " + count + " records in " + (System.currentTimeMillis() - start) / 1000 + " seconds");
+
+
+        } catch (SQLException sqle) {
+            DBMS.printSqlException(true, sqle);
+            throw new Exception("Load of 'user_notification' table failed.\n" +
+                    sqle.getMessage());
+        } finally {
+            close(rs);
+            close(delete);
+            close(select);
+            close(insert);
         }
     }
 
