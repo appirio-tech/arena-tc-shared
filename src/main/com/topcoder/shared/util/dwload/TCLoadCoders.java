@@ -361,6 +361,11 @@ public class TCLoadCoders extends TCLoad {
             query.append("       ,e.address ");                  // 18
             query.append("       ,c.comp_country_code");         // 19
             query.append("       ,u.last_site_hit_date");        // 20
+            query.append("       ,u.reg_source");               // 21
+            query.append("       ,u.utm_source");               // 22
+            query.append("       ,u.utm_medium");               // 23
+            query.append("       ,u.utm_campaign");             // 24
+            query.append("       ,u.create_date");              // 25
             query.append("  FROM coder c ");
             query.append("       ,user u ");
             query.append("       ,email e ");
@@ -417,10 +422,16 @@ public class TCLoadCoders extends TCLoad {
             query.append("       ,status ");                    // 17
             query.append("       ,email ");                     // 18
             query.append("       ,comp_country_code ");         // 19
-            query.append("       ,last_site_hit_date)");        // 20
+            query.append("       ,last_site_hit_date");         // 20
+            query.append("       ,reg_source ");                // 21
+            query.append("       ,utm_source ");                // 22
+            query.append("       ,utm_medium ");                // 23
+            query.append("       ,utm_campaign ");              // 24
+            query.append("       ,create_date )");              // 25
+
             query.append("VALUES (");
             query.append("?,?,?,?,?,?,?,?,?,?,");  // 10
-            query.append("?,?,?,?,?,?,?,?,?,?)");  // 20
+            query.append("?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");  // 25
             psIns = prepareStatement(query.toString(), TARGET_DB);
 
             // Our update statement
@@ -445,7 +456,12 @@ public class TCLoadCoders extends TCLoad {
             query.append("       ,email = ? ");                     // 17
             query.append("       ,comp_country_code = ?");          // 18
             query.append("       ,last_site_hit_date = ?");         // 19
-            query.append(" WHERE coder_id = ?");                    // 20
+            query.append("       ,reg_source = ?");                 // 20
+            query.append("       ,utm_source = ?");                 // 21
+            query.append("       ,utm_medium = ?");                 // 22
+            query.append("       ,utm_campaign = ?");               // 23
+            query.append("       ,create_date = ?");                // 24
+            query.append(" WHERE coder_id = ?");                    // 25
             psUpd = prepareStatement(query.toString(), TARGET_DB);
 
             // Our select statement to determine if a particular row is
@@ -494,7 +510,14 @@ public class TCLoadCoders extends TCLoad {
                     psUpd.setString(17, rs.getString("address"));
                     psUpd.setString(18, rs.getString("comp_country_code"));
                     psUpd.setTimestamp(19, rs.getTimestamp("last_site_hit_date"));
-                    psUpd.setLong(20, coder_id);
+                    psUpd.setString(20, rs.getString("reg_source"));
+                    psUpd.setString(21, rs.getString("utm_source"));
+                    psUpd.setString(22, rs.getString("utm_medium"));
+                    psUpd.setString(23, rs.getString("utm_campaign"));
+                    psUpd.setTimestamp(24, rs.getTimestamp("create_date"));
+
+
+                    psUpd.setLong(25, coder_id);
 
                     // Now, execute the insert of the new row
                     retVal = psUpd.executeUpdate();
@@ -526,6 +549,12 @@ public class TCLoadCoders extends TCLoad {
                     psIns.setString(18, rs.getString("address"));
                     psIns.setString(19, rs.getString("comp_country_code"));
                     psIns.setTimestamp(20, rs.getTimestamp("last_site_hit_date"));
+                    psIns.setString(21, rs.getString("reg_source"));
+                    psIns.setString(22, rs.getString("utm_source"));
+                    psIns.setString(23, rs.getString("utm_medium"));
+                    psIns.setString(24, rs.getString("utm_campaign"));
+                    psIns.setTimestamp(25, rs.getTimestamp("create_date"));
+
 
                     // Now, execute the insert of the new row
                     retVal = psIns.executeUpdate();
