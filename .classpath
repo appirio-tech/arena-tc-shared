@@ -23,10 +23,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="var" path="ARTIFACTS"/>
 	<classpathentry kind="var" path="EXTERNAL_ARTIFACTS"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/custom-serialization"/>
 	<classpathentry kind="var" path="ARTIFACTS/basic_type_serialization-1.0.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/arena-shared"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/logging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/concurrent"/>
-	<classpathentry kind="output" path="build"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=topcoder-shared&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

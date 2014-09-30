@@ -4,11 +4,6 @@
     <property name="glue.dir" location="${root.dir}/glue" />
     <import file="${glue.dir}/glue-jar.xml" />
 
-<!--
-    <property name="compile.source" value="1.6"/>
--->
-
-
     <!-- we need this target for web, they have to upgrade their build process first -->
     <target name="shared-all">
         <property name="app.version" value="SNAPSHOT" />
