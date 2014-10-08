@@ -23,7 +23,6 @@ import java.io.File;
  * </ol>
  * </p>
  *
-
  * <p>
  * Changes in version 1.1 (TC Competition Engine - R Language Test Support):
  * <ol>
@@ -70,7 +69,7 @@ public class ServicesConstants {
 
     public static final String LONG_SUBMISSIONS = BASE + "/submissions/long/";
 
-    public static final String APPS_CLASSES = BASE + "/build/farm-server.jar" + File.pathSeparator + BASE + "/build/shared.jar" + File.pathSeparator
+    public static final String APPS_CLASSES = BASE + "/build/classes.jar" + File.pathSeparator + BASE + "/build/shared.jar" + File.pathSeparator
                                               + BASE + "/build/custom-serialization.jar" + File.pathSeparator
                                               + BASE + "/build/basic_type_serialization.jar";
     public static final String WRITER_JAR = BASE + "/build/writer.jar" + File.pathSeparator + BASE + "/build/basic_type_serialization.jar";
