@@ -47,8 +47,9 @@ public class DataTypeFactory extends SimpleDataTypeFactory {
                     + " FROM data_type");
             rs = s.executeQuery();
             while (rs.next()) {
-                new DataType(rs.getInt(1), rs.getString(2),
+                DataType dt = new DataType(rs.getInt(1), rs.getString(2),
                         mappings.get(Integer.toString(rs.getInt(1))));
+                types.put(Integer.toString(rs.getInt(1)), dt);
 
             }
             
