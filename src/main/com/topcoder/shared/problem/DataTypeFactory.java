@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.topcoder.shared.util.DBMS;
 /**
@@ -26,19 +27,19 @@ public class DataTypeFactory extends SimpleDataTypeFactory {
                     "SELECT data_type_id, language_id, display_value "
                     + "FROM data_type_mapping");
             rs = s.executeQuery();
-            HashMap mappings = new HashMap();
+            HashMap<String, Map<String, String>> mappings = new HashMap<String, Map<String, String>>();
 
             while (rs.next()) {
-                int dataTypeId = rs.getInt(1);
-                int languageId = rs.getInt(2);
+                String dataTypeId = Integer.toString(rs.getInt(1));
+                String languageId = Integer.toString(rs.getInt(2));
                 String desc = rs.getString(3);
-                HashMap mapping = (HashMap) mappings.get(new Integer(dataTypeId));
+                Map<String, String> mapping = mappings.get(dataTypeId);
 
                 if (mapping == null) {
-                    mapping = new HashMap();
-                    mappings.put(new Integer(dataTypeId), mapping);
+                    mapping = new HashMap<String, String>();
+                    mappings.put(dataTypeId, mapping);
                 }
-                mapping.put(new Integer(languageId), desc);
+                mapping.put(languageId, desc);
             }
             rs.close();
             s.close();
@@ -46,8 +47,9 @@ public class DataTypeFactory extends SimpleDataTypeFactory {
                     + " FROM data_type");
             rs = s.executeQuery();
             while (rs.next()) {
-                new DataType(rs.getInt(1), rs.getString(2),
-                        (HashMap) mappings.get(new Integer(rs.getInt(1))));
+                DataType dt = new DataType(rs.getInt(1), rs.getString(2),
+                        mappings.get(Integer.toString(rs.getInt(1))));
+                types.put(Integer.toString(rs.getInt(1)), dt);
 
             }
             
